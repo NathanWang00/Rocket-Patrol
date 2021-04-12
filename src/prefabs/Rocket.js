@@ -6,7 +6,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
     // add object to existing scene
     scene.add.existing(this);
     this.isFiring = false;
-    this.moveSpeed = 2;
+    this.moveSpeed = 5;
     }
 
     update() {
@@ -29,8 +29,12 @@ class Rocket extends Phaser.GameObjects.Sprite {
         }
         // reset on miss
         if(this.y <= borderUISize * 3 + borderPadding) {
-            this.isFiring = false;
-            this.y = game.config.height - borderUISize - borderPadding;
+            this.reset();
         }
+    }
+
+    reset() {
+        this.isFiring = false;
+        this.y = game.config.height - borderUISize - borderPadding;
     }
 }
