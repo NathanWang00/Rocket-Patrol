@@ -10,7 +10,6 @@ class Spaceship extends Phaser.GameObjects.Sprite {
     
     //random ship direction
     this.flip = Phaser.Math.Between(0, 1);
-    console.log("flip");
     if (this.flip == 0)
     {
         this.flipX = true;

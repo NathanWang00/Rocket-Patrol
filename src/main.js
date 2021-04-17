@@ -1,5 +1,5 @@
 //Nathan Wang, Rocket Patrol Extreme, 4/19/21, ~10 hours for the mod, ~10 hours for the base game.
-//Points: random ship movement (5), 
+//Points: random ship movement (5), parallax scrolling (10), remaining time (10)
 
 let config = {
     type: Phaser.CANVAS,
