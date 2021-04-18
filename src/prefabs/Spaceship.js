@@ -50,4 +50,8 @@ class Spaceship extends Phaser.GameObjects.Sprite {
             this.x = 0 - Phaser.Math.Between(0, 50);
         }
     }
+
+    increaseSpeed(){
+        this.moveSpeed *= 1.25;
+    }
 }
