@@ -8,6 +8,7 @@ class Menu extends Phaser.Scene {
       this.load.audio('sfx_select', './assets/blip_select12.wav');
       this.load.audio('sfx_explosion', './assets/explosion38.wav');
       this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
+      this.load.audio('bgm', './assets/Anders_False_Awakenings.mp3')
   }
 
   create() {
@@ -16,7 +17,7 @@ class Menu extends Phaser.Scene {
           fontFamily: 'Courier',
           fontSize: '26px',
           backgroundColor: '#A52A2A',
-          color: '#FFFFFF',
+          color: '#fefe33',
           align: 'right',
           padding: {
               top: 5,
@@ -29,7 +30,7 @@ class Menu extends Phaser.Scene {
       this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL EXTREME!!!', menuConfig).setOrigin(0.5);
       this.add.text(game.config.width/2, game.config.height/2, 'Arrows/mouse to move, (F)/click to fire', menuConfig).setOrigin(0.5);
       menuConfig.backgroundColor = '#FF8C00';
-      menuConfig.color = '#000';
+      menuConfig.color = '#800000';
       menuConfig.fontSize = '24px';
       this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, '<-/l.click for Novice, ->/r.click for Expert', menuConfig).setOrigin(0.5);
   
@@ -49,6 +50,7 @@ class Menu extends Phaser.Scene {
         // easy mode
         game.settings = {
           spaceshipSpeed: 3,
+          smallshipSpeed: 4,
           gameTimer: 60000,
           pointBonus: 1,
           mouseOn: false
@@ -60,6 +62,7 @@ class Menu extends Phaser.Scene {
       // hard mode
       game.settings = {
         spaceshipSpeed: 4.5,
+        smallshipSpeed: 6,
         gameTimer: 45000,
         pointBonus: 1.5,
         mouseOn: false
@@ -73,6 +76,7 @@ class Menu extends Phaser.Scene {
       // easy mode
       game.settings = {
         spaceshipSpeed: 3,
+        smallshipSpeed: 4,
         gameTimer: 60000,
         pointBonus: 1,
         mouseOn: true
@@ -85,6 +89,7 @@ class Menu extends Phaser.Scene {
       // hard mode
       game.settings = {
         spaceshipSpeed: 4.5,
+        smallshipSpeed: 6,
         gameTimer: 45000,
         pointBonus: 1.5,
         mouseOn: true

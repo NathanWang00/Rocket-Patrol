@@ -7,6 +7,7 @@ class Play extends Phaser.Scene {
         // load images/tile sprites
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
+        this.load.image('smallship', './assets/smallship.png');
         this.load.image('starfield', './assets/starfield.png');
         this.load.image('starfieldfar', './assets/starfieldsmall.png');
         // load spritesheet
@@ -22,19 +23,11 @@ class Play extends Phaser.Scene {
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
         this.starfieldfar = this.add.tileSprite(0, 0, 640, 480, 'starfieldfar').setOrigin(0, 0);
 
-        // UI background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0xA52A2A).setOrigin(0, 0);
-        // white borders
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
 
         // add ships (x3)
-        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30*game.settings.pointBonus).setOrigin(0, 0);
+        this.ship01 = new Smallship(this, game.config.width + borderUISize*6, borderUISize*4, 'smallship', 0, 30*game.settings.pointBonus).setOrigin(0, 0);
         this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20*game.settings.pointBonus).setOrigin(0, 0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10*game.settings.pointBonus).setOrigin(0, 0);
         
@@ -58,6 +51,14 @@ class Play extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
             frameRate: 30
         });
+
+        // UI background
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0xA52A2A).setOrigin(0, 0);
+        // white borders
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0x45190b).setOrigin(0, 0);
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x45190b).setOrigin(0, 0);
+        this.add.rectangle(0, 0, borderUISize, game.config.height, 0x45190b).setOrigin(0, 0);
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x45190b).setOrigin(0, 0);
 
         // initialize score
         this.p1Score = 0;
@@ -85,8 +86,12 @@ class Play extends Phaser.Scene {
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+            if (game.settings.mouseOn)
+                {
+                    this.input.mouse.releasePointerLock();
+                }
+            this.bgm.stop();
             this.gameOver = true;
-            
         }, null, this);
 
         // countdown text
@@ -114,6 +119,10 @@ class Play extends Phaser.Scene {
         // explosion sound
         this.explosion = this.sound.add('sfx_explosion', {volume: this.volumeLevel});
 
+        // bgm
+        this.bgm = this.sound.add('bgm', {volume: this.volumeLevel, loop: true});
+        this.bgm.play();
+
         // js black magic for pointer movement
         this.input.on('pointermove', function (pointer) {
             this.p1Rocket.changeDestination(pointer.movementX);
@@ -122,7 +131,7 @@ class Play extends Phaser.Scene {
         // on click
         this.input.on('pointerdown', function () {
             if (game.settings.mouseOn) {
-                if (this.input.mouse.locked) {
+                if (this.input.mouse.locked && !this.gameOver) {
                     this.p1Rocket.fire();
                 } else {
                     this.input.mouse.requestPointerLock();
@@ -233,7 +242,7 @@ class Play extends Phaser.Scene {
             {
                 this.input.mouse.releasePointerLock();
             }
-
+            this.bgm.stop();
             this.gameOver = true;
         }, null, this);
     }

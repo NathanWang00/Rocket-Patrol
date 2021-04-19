@@ -15,8 +15,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
     }
 
     update() {
-        //console.log(this.moveOk);
-        if (this.mouse == false) {
+        if (!game.settings.mouseOn) {
             // left/right movement
             if(!this.isFiring) {
                 if(keyLEFT.isDown && this.x >= borderUISize + this.width) {
@@ -41,8 +40,6 @@ class Rocket extends Phaser.GameObjects.Sprite {
                     this.destinationX = game.config.width - borderUISize - this.width;
                 } 
                 this.x = this.destinationX;
-                
-                //console.log(this.destinationX);
             }
         }
 
@@ -81,7 +78,6 @@ class Rocket extends Phaser.GameObjects.Sprite {
     }
 
     stopMovement() {
-        console.log("stop");
         if (this.moveOk) {
             this.moveOk = false;
         }
