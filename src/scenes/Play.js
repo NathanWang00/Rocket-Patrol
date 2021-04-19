@@ -22,8 +22,8 @@ class Play extends Phaser.Scene {
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
         this.starfieldfar = this.add.tileSprite(0, 0, 640, 480, 'starfieldfar').setOrigin(0, 0);
 
-        // green UI background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+        // UI background
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0xA52A2A).setOrigin(0, 0);
         // white borders
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -43,6 +43,14 @@ class Play extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
+        // define mouse
+        if(game.settings.mouseOn)
+        {
+            this.input.mouse.disableContextMenu();
+            this.pointer = this.input.activePointer;
+            this.input.mouse.requestPointerLock();
+        }
 
         // animation config
         this.anims.create({
@@ -101,11 +109,27 @@ class Play extends Phaser.Scene {
             this.ship01.increaseSpeed();
             this.ship02.increaseSpeed();
             this.ship03.increaseSpeed();
-            console.log("test");
         }, null, this);
 
         // explosion sound
         this.explosion = this.sound.add('sfx_explosion', {volume: this.volumeLevel});
+
+        // js black magic for pointer movement
+        this.input.on('pointermove', function (pointer) {
+            this.p1Rocket.changeDestination(pointer.movementX);
+        }, this);
+
+        // on click
+        this.input.on('pointerdown', function () {
+            if (game.settings.mouseOn) {
+                if (this.input.mouse.locked) {
+                    this.p1Rocket.fire();
+                } else {
+                    this.input.mouse.requestPointerLock();
+                    this.p1Rocket.startMovement();
+                }
+            }
+        }, this);
     }
 
     update() {
@@ -145,6 +169,15 @@ class Play extends Phaser.Scene {
 
         // show time left
         this.countdown.text = ('Time:' + Phaser.Math.CeilTo((this.clock.delay - this.clock.getElapsed()) / 1000));
+
+        if (game.settings.mouseOn && !this.input.mouse.locked) {
+            this.p1Rocket.stopMovement();
+        }
+        
+        if (game.settings.mouseOn && this.input.mouse.locked) {
+            this.p1Rocket.startMovement();
+        }
+
     }
 
     checkCollision(rocket, ship) {
@@ -196,9 +229,12 @@ class Play extends Phaser.Scene {
         this.clock = this.time.delayedCall(this.currentTime + amount, () => {
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+            if (game.settings.mouseOn)
+            {
+                this.input.mouse.releasePointerLock();
+            }
+
             this.gameOver = true;
         }, null, this);
-
-        console.log(amount);
     }
 }
